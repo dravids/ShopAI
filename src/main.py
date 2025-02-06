@@ -22,7 +22,7 @@ app = FastAPI(
 @app.get("/ping", tags=["Root"])
 async def read_root():
     """
-    Root endpoint that returns a welcome message.
+    Root endpoint that returns welcome message.
     
     Returns:
         dict: A simple welcome message

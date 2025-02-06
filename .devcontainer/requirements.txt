@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pylint
+flake8
+mypy
+black
+sphinx 
+sphinx-rtd-theme 
+sphinx-autodoc-typehints
+pydantic[email]
+pytest

@@ -1,28 +1,48 @@
 {
-    "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python", // Standard .venv naming
-    "python.formatting.provider": "black",
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": true
+    "name": "ShopAI Backend",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/app",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.formatting.provider": "black",
+                "python.linting.enabled": true,
+                "python.linting.pylintEnabled": true,
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.organizeImports": true
+                },
+                "files.exclude": {
+                    "**/__pycache__": true,
+                    "**/.pytest_cache": true,
+                    "**/venv": true
+                },
+                "[python]": {
+                    "editor.defaultFormatter": "ms-python.black-formatter",
+                    "editor.formatOnSave": true,
+                    "editor.rulers": [
+                        88
+                    ],
+                    "editor.tabSize": 4
+                },
+                "python.analysis.extraPaths": [
+                    "src"
+                ],
+                "python.testing.pytestEnabled": true,
+                "python.testing.unittestEnabled": false
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-python.black-formatter",
+                "eamodio.gitlens"
+            ]
+        }
     },
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/.pytest_cache": true,
-        "**/venv": true // Add virtual environment to excluded files
-    },
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter", // Correct Black formatter ID
-        "editor.formatOnSave": true,
-        "editor.rulers": [
-            88
-        ],
-        "editor.tabSize": 4 // Explicit Python indentation setting
-    },
-    "python.analysis.extraPaths": [
-        "src" // Simplified path specification
+    "forwardPorts": [
+        8001
     ],
-    "python.testing.pytestEnabled": true, // Explicit pytest configuration
-    "python.testing.unittestEnabled": false
+    "postCreateCommand": "pip install -r requirements.txt"
 }

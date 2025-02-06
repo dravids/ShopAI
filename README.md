@@ -9,6 +9,9 @@ One single app for all your shopping needs
 ```bash
 git clone https://github.com/yourusername/shopai.git
 cd shopai
+```
 
 2. Create and activate virtual environment:
 
+python -m venv venv
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate

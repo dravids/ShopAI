@@ -10,14 +10,22 @@
                 "python.linting.flake8Enabled": true,
                 "python.linting.mypyEnabled": true,
                 "remote.forwardOnOpen": true,
-                "remote.restoreForwardedPorts": true
+                "remote.restoreForwardedPorts": true,
+                "python.formatting.provider": "black",
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.organizeImports": true
+                },
             },
             "extensions": [
                 "ms-python.python",
-                "ms-python.vscode-pylance"
+                "ms-python.vscode-pylance",
+                "ms-python.black-formatter"
             ]
         }
     },
-    "forwardPorts": [8001],
+    "forwardPorts": [
+        8001
+    ],
     "postCreateCommand": "uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload"
 }

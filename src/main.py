@@ -16,18 +16,19 @@ app = FastAPI(
     description=description,
     version="1.0.0",
     docs_url=None,  # Disable default docs
-    redoc_url=None  # Disable default redoc
+    redoc_url=None,  # Disable default redoc
 )
+
 
 @app.get("/ping", tags=["Root"])
 async def read_root():
     """
-    Root endpoint that returns welcome message.
-    
+     Root endpoint that returns welcome message.
     Returns:
-        dict: A simple welcome message
+     dict: A simple welcome message
     """
     return {"response": "pong-test-hot-reload"}
+
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
@@ -39,6 +40,7 @@ async def custom_swagger_ui_html():
         title=app.title + " - Swagger UI",
         oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
     )
+
 
 @app.get("/redoc", include_in_schema=False)
 async def redoc_html():

@@ -10,3 +10,4 @@ sphinx-autodoc-typehints
 pydantic[email]
 pytest
 sphinx-wagtail-theme
+isort

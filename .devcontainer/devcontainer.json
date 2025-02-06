@@ -4,18 +4,6 @@
     "customizations": {
         "vscode": {
             "settings": {
-                "python.pythonPath": "/usr/local/bin/python",
-                "python.linting.enabled": true,
-                "python.linting.pylintEnabled": true,
-                "python.linting.flake8Enabled": true,
-                "python.linting.mypyEnabled": true,
-                "python.formatting.provider": "black",
-                "editor.formatOnSave": true,
-                "editor.codeActionsOnSave": {
-                    "source.organizeImports": true
-                },
-                "python.sortImports.args": ["--profile", "black"],
-                "isort.args": ["--profile", "black"],
                 "remote.forwardOnOpen": true,
                 "remote.restoreForwardedPorts": true
             },

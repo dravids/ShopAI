@@ -10,6 +10,10 @@
                 "python.formatting.provider": "black",
                 "python.linting.enabled": true,
                 "python.linting.pylintEnabled": true,
+                "python.linting.flake8Enabled": true,
+                "python.linting.mypyEnabled": true,
+                "python.sortImports.args": ["--profile", "black"],
+                "isort.args": ["--profile", "black"],
                 "editor.formatOnSave": true,
                 "editor.codeActionsOnSave": {
                     "source.organizeImports": true

@@ -27,7 +27,7 @@ async def read_root():
     Returns:
         dict: A simple welcome message
     """
-    return {"response": "pong"}
+    return {"response": "pong-test-hot-reload"}
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():

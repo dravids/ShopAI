@@ -21,12 +21,38 @@ python -m venv venv
 source venv/bin/activate  # On Windows: .\venv\Scripts\activate
 ```
 
-3. Install dependencies:
+3. Set up environment variables:
+```bash
+# Create .env file
+cp .env.example .env
+```
+
+The following environment variables are required:
+
+- `GOOGLE_MAPS_API_KEY`: Your Google Maps API key with Places API enabled
+  - Required for location autocomplete functionality
+  - In development mode, mock data will be used
+  - In production mode, real Google Maps data will be returned
+
+- `ENVIRONMENT`: Application environment (development/production)
+  - `development`: Uses mock data for location services
+  - `production`: Uses real Google Maps API for location services
+
+Example .env file:
+```bash
+# Google Maps API key for location services
+GOOGLE_MAPS_API_KEY=your_api_key_here
+
+# Environment (development or production)
+ENVIRONMENT=development
+```
+
+4. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Start the development server:
+5. Start the development server:
 ```bash
 uvicorn src.main:app --reload --port 8000
 ```

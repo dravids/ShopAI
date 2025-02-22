@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 
+from .models.location import LocationAutocompleteRequest, LocationAutocompleteResponse
+from .services.location_service import LocationService
+
 description = """
 # ShopAI API
 This is a modern e-commerce API built with FastAPI.
@@ -40,6 +43,26 @@ async def custom_swagger_ui_html():
         title=app.title + " - Swagger UI",
         oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
     )
+
+location_service = LocationService()
+
+@app.post("/api/locations/autocomplete", 
+    response_model=LocationAutocompleteResponse,
+    tags=["Location"])
+async def autocomplete_location(
+    request: LocationAutocompleteRequest
+) -> LocationAutocompleteResponse:
+    """
+    Get location suggestions based on user input.
+    
+    Args:
+        request: Location search query
+        
+    Returns:
+        List of location suggestions matching the query
+    """
+    suggestions = await location_service.get_location_suggestions(request.query)
+    return LocationAutocompleteResponse(suggestions=suggestions)
 
 
 @app.get("/redoc", include_in_schema=False)

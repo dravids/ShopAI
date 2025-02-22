@@ -1,21 +1,21 @@
-import os
 import googlemaps
 from typing import List
-from dotenv import load_dotenv
-from fastapi import HTTPException
-
+from ..core.config import Settings
+from ..core.exceptions import AppException
 from ..models.location import LocationSuggestion
-
-load_dotenv()
 
 class LocationService:
     def __init__(self, test_mode: bool = True):
         self.test_mode = test_mode
         self.client = None
         if not test_mode:
-            api_key = os.getenv("GOOGLE_MAPS_API_KEY")
-            if api_key:
-                self.client = googlemaps.Client(key=api_key)
+            try:
+                self.client = googlemaps.Client(key=Settings().google_maps_api_key)
+            except Exception as e:
+                raise AppException(
+                    code="config_error",
+                    message=f"Failed to initialize Google Maps client: {str(e)}"
+                )
 
     async def get_location_suggestions(self, query: str) -> List[LocationSuggestion]:
         if self.test_mode:
@@ -51,4 +51,7 @@ class LocationService:
                 for result in results
             ]
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise AppException(
+                code="google_maps_error",
+                message=f"Failed to fetch location suggestions: {str(e)}"
+            )

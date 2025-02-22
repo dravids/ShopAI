@@ -22,8 +22,10 @@ app = FastAPI(
 from .core.middleware import error_handler_middleware
 app.middleware("http")(error_handler_middleware)
 
-# Initialize settings and routes
+# Initialize settings with environment
 settings = get_settings()
+
+# Configure routes with production mode
 v1_router = create_v1_router(get_location_service)
 app.include_router(v1_router)
 

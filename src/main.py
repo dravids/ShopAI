@@ -44,7 +44,7 @@ async def custom_swagger_ui_html():
         oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
     )
 
-location_service = LocationService(test_mode=True)  # Use test mode for development
+location_service = LocationService(test_mode=False)  # Use production mode with API key
 
 @app.post("/api/locations/autocomplete",
     response_model=LocationAutocompleteResponse,

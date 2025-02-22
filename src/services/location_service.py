@@ -9,11 +9,13 @@ from ..models.location import LocationSuggestion
 load_dotenv()
 
 class LocationService:
-    def __init__(self):
+    def __init__(self, test_mode: bool = True):
+        self.test_mode = test_mode
         self.client = None
-        api_key = os.getenv("GOOGLE_MAPS_API_KEY")
-        if api_key:
-            self.client = googlemaps.Client(key=api_key)
+        if not test_mode:
+            api_key = os.getenv("GOOGLE_MAPS_API_KEY")
+            if api_key:
+                self.client = googlemaps.Client(key=api_key)
 
     async def get_location_suggestions(self, query: str) -> List[LocationSuggestion]:
         # Mock response for testing without API key

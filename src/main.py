@@ -1,17 +1,13 @@
 from fastapi import FastAPI
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 
-from .models.location import LocationAutocompleteRequest, LocationAutocompleteResponse
-from .services.location_service import LocationService
+from .core.config import get_settings
+from .services.service_factory import get_location_service
+from .routes.v1 import create_v1_router
 
 description = """
 # ShopAI API
-This is a modern e-commerce API built with FastAPI.
-
-## Features
-* Product management
-* User authentication
-* Order processing
+One single app for all your shopping needs
 """
 
 app = FastAPI(
@@ -22,54 +18,29 @@ app = FastAPI(
     redoc_url=None,  # Disable default redoc
 )
 
+# Add middleware
+from .core.middleware import error_handler_middleware
+app.middleware("http")(error_handler_middleware)
 
-@app.get("/ping", tags=["Root"])
-async def read_root():
-    """
-     Root endpoint that returns welcome message.
-    Returns:
-     dict: A simple welcome message
-    """
-    return {"response": "pong-test-hot-reload"}
+# Initialize settings with environment
+settings = get_settings()
 
+# Configure routes with production mode
+v1_router = create_v1_router(get_location_service)
+app.include_router(v1_router)
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
-    """
-    Custom Swagger UI documentation.
-    """
+    """Custom Swagger UI documentation"""
     return get_swagger_ui_html(
         openapi_url=app.openapi_url,
         title=app.title + " - Swagger UI",
         oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
     )
 
-location_service = LocationService(test_mode=False)  # Use production mode with API key
-
-@app.post("/api/locations/autocomplete",
-    response_model=LocationAutocompleteResponse,
-    tags=["Location"])
-async def autocomplete_location(
-    request: LocationAutocompleteRequest
-) -> LocationAutocompleteResponse:
-    """
-    Get location suggestions based on user input.
-    
-    Args:
-        request: Location search query
-        
-    Returns:
-        List of location suggestions matching the query
-    """
-    suggestions = await location_service.get_location_suggestions(request.query)
-    return LocationAutocompleteResponse(suggestions=suggestions)
-
-
 @app.get("/redoc", include_in_schema=False)
 async def redoc_html():
-    """
-    ReDoc documentation.
-    """
+    """ReDoc documentation"""
     return get_redoc_html(
         openapi_url=app.openapi_url,
         title=app.title + " - ReDoc",

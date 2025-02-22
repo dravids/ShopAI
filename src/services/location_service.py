@@ -10,10 +10,10 @@ load_dotenv()
 
 class LocationService:
     def __init__(self):
+        self.client = None
         api_key = os.getenv("GOOGLE_MAPS_API_KEY")
-        if not api_key:
-            raise ValueError("Google Maps API key not found in environment variables")
-        self.client = googlemaps.Client(key=api_key)
+        if api_key:
+            self.client = googlemaps.Client(key=api_key)
 
     async def get_location_suggestions(self, query: str) -> List[LocationSuggestion]:
         # Mock response for testing without API key

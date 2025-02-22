@@ -18,6 +18,10 @@ app = FastAPI(
     redoc_url=None,  # Disable default redoc
 )
 
+# Add middleware
+from .core.middleware import error_handler_middleware
+app.middleware("http")(error_handler_middleware)
+
 # Initialize settings and routes
 settings = get_settings()
 v1_router = create_v1_router(get_location_service)

@@ -16,7 +16,7 @@ from typing import List
 import googlemaps
 from ..core.config import Settings
 from ..core.exceptions import AppException
-from ..models.location import LocationSuggestion
+from ..models.location import LocationSuggestion, LocationDetails
 
 
 class LocationService:
@@ -71,13 +71,59 @@ class LocationService:
                     description="Mock Location 1, Test City",
                     main_text="Mock Location 1",
                     secondary_text="Test City",
+                    details=LocationDetails(
+                        latitude=40.7128,
+                        longitude=-74.0060,
+                        formatted_address="Mock Location 1, Test City, Test Country",
+                        types=["establishment", "point_of_interest"],
+                        name="Mock Location 1",
+                        vicinity="Test City",
+                        url="https://maps.google.com/?q=mock1",
+                        website="https://mock1.example.com",
+                        formatted_phone_number="+1 555-0123",
+                        international_phone_number="+1-555-0123",
+                        rating=4.5,
+                        user_ratings_total=100,
+                        price_level=2,
+                        opening_hours={
+                            "open_now": True,
+                            "weekday_text": ["Monday: 9:00 AM – 5:00 PM"]
+                        },
+                        wheelchair_accessible_entrance=True,
+                        delivery=True,
+                        dine_in=True,
+                        editorial_summary="A mock location for testing"
+                    )
                 ),
                 LocationSuggestion(
                     place_id="mock_place_2",
                     description="Mock Location 2, Test City",
                     main_text="Mock Location 2",
                     secondary_text="Test City",
-                ),
+                    details=LocationDetails(
+                        latitude=51.5074,
+                        longitude=-0.1278,
+                        formatted_address="Mock Location 2, Test City, Test Country",
+                        types=["establishment", "point_of_interest"],
+                        name="Mock Location 2",
+                        vicinity="Test City",
+                        url="https://maps.google.com/?q=mock2",
+                        website="https://mock2.example.com",
+                        formatted_phone_number="+1 555-0124",
+                        international_phone_number="+1-555-0124",
+                        rating=4.8,
+                        user_ratings_total=200,
+                        price_level=3,
+                        opening_hours={
+                            "open_now": False,
+                            "weekday_text": ["Monday: 10:00 AM – 6:00 PM"]
+                        },
+                        wheelchair_accessible_entrance=True,
+                        delivery=False,
+                        dine_in=True,
+                        editorial_summary="Another mock location for testing"
+                    )
+                )
             ]
 
         try:
@@ -85,17 +131,53 @@ class LocationService:
                 input_text=query, types=["geocode", "establishment"], language="en"
             )
 
-            return [
-                LocationSuggestion(
+            suggestions = []
+            for result in results:
+                suggestion = LocationSuggestion(
                     place_id=result["place_id"],
                     description=result["description"],
                     main_text=result["structured_formatting"]["main_text"],
-                    secondary_text=result["structured_formatting"].get(
-                        "secondary_text"
-                    ),
+                    secondary_text=result["structured_formatting"].get("secondary_text"),
                 )
-                for result in results
-            ]
+                
+                try:
+                    place_details = self.client.place(
+                        result["place_id"],
+                        fields=[
+                            "formatted_address", "geometry", "name", "type",
+                            "vicinity", "url", "website", "formatted_phone_number",
+                            "international_phone_number", "rating", "user_ratings_total",
+                            "price_level", "opening_hours", "wheelchair_accessible_entrance",
+                            "delivery", "dine_in", "editorial_summary"
+                        ]
+                    )["result"]
+                    
+                    suggestion.details = LocationDetails(
+                        latitude=place_details["geometry"]["location"]["lat"],
+                        longitude=place_details["geometry"]["location"]["lng"],
+                        formatted_address=place_details["formatted_address"],
+                        types=place_details.get("types", []),
+                        name=place_details["name"],
+                        vicinity=place_details.get("vicinity"),
+                        url=place_details.get("url"),
+                        website=place_details.get("website"),
+                        formatted_phone_number=place_details.get("formatted_phone_number"),
+                        international_phone_number=place_details.get("international_phone_number"),
+                        rating=place_details.get("rating"),
+                        user_ratings_total=place_details.get("user_ratings_total"),
+                        price_level=place_details.get("price_level"),
+                        opening_hours=place_details.get("opening_hours"),
+                        wheelchair_accessible_entrance=place_details.get("wheelchair_accessible_entrance"),
+                        delivery=place_details.get("delivery"),
+                        dine_in=place_details.get("dine_in"),
+                        editorial_summary=place_details.get("editorial_summary", {}).get("overview")
+                    )
+                except Exception as e:
+                    print(f"Failed to fetch details for place {result['place_id']}: {str(e)}")
+                
+                suggestions.append(suggestion)
+            
+            return suggestions
         except Exception as e:
             raise AppException(
                 code="google_maps_error",

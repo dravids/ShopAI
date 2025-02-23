@@ -17,14 +17,14 @@ ShopAI Documentation
    api/models
 
 Project Overview
---------------
+---------------
 ShopAI is a modern API built with FastAPI that \
 powers the world's first Shopping AI assistant \
 optimized for shopping, featuring location-based \
 services and intelligent product recommendations.
 
 API Documentation
----------------
+------------------
 .. autosummary::
    :toctree: _autosummary
    :recursive:
